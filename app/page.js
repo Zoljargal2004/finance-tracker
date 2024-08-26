@@ -8,20 +8,29 @@ export default function Home() {
 
   const addToList = () => {
     const item = prompt();
-    fetch(`http://localhost:4000/category/add?name=${item}`);
+    fetch(`http://localhost:4000/category/add`, {
+      method: "POST",
+      body: JSON.stringify({ name: item }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    });
     loadItems();
   };
 
-  const editItem = async (name) => {
+  const editItem = async (id, name) => {
     const newName = prompt();
     await fetch(
-      `http://localhost:4000/category/edit?oldName=${name}&newName=${newName}`
+      `http://localhost:4000/category/edit?id=${id}&newName=${newName}`,
+      { method: "PUT" }
     );
     loadItems();
   };
 
-  const delItem = async (name) => {
-    await fetch(`http://localhost:4000/category/del?name=${name}`);
+  const delItem = async (id, name) => {
+    await fetch(`http://localhost:4000/category/${id}`, {
+      method: "DELETE"
+    });
     loadItems();
   };
 
@@ -51,7 +60,7 @@ export default function Home() {
             <span>{category.name}</span>
             <button
               onClick={() => {
-                editItem(category.name);
+                editItem(category.id, category.name);
               }}
               className="px-10 py-2 bg-slate-800 rounded-[12px]"
             >
@@ -59,7 +68,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => {
-                delItem(category.name);
+                delItem(category.id, category.name);
               }}
               className="px-10 py-2 bg-slate-800 rounded-[12px]"
             >
