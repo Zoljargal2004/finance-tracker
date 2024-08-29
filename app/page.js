@@ -1,4 +1,4 @@
-"use client";
+
 
 import AddNewCatForum from "./(component)/dialog";
 import Header from "./(component)/header";
