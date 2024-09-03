@@ -13,7 +13,7 @@ export async function postNewCat(name, icon, color) {
   });
 };
 
-export const fetchCategories = async (obj) => {
+export const fetchCategories = async () => {
   const res = await fetch(`http://localhost:4000/category/list`, {
     method: "GET",
     headers: {'Content-type': 'application/json'}
@@ -32,4 +32,19 @@ export const deleteCategories = async (id) => {
       }
     )
   });
+}
+
+export const editCategory = async (id, newName, newIconName, newColor) => {
+  const res = await fetch(`http://localhost:4000/category/edit`, {
+    method: 'PUT',
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+    body: JSON.stringify(
+      {
+        id: id,
+        name: newName,
+        icon_name: newIconName,
+        color: newColor
+      }
+    )
+  })
 }

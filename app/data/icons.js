@@ -43,5 +43,11 @@ export const icons = [
 
 
 export const getYourIcon = (iconName) => {
-    return icons.filter(obj => obj.name == iconName)[0].Icon;
+
+   const lis = icons.filter(obj => obj.name == iconName);
+  console.log(lis)
+  if (!lis.length){
+    return icons[0].Icon
+  }
+  return lis[0].Icon
 }
