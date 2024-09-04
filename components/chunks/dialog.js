@@ -17,26 +17,26 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { getYourIcon, icons } from "../data/icons";
+import { getYourIcon, icons } from "../../app/data/icons";
 import { Check } from "lucide-react";
-import colors from "../data/colors";
+import colors from "../../app/data/colors";
 
 import { act, useEffect, useState } from "react";
-import { editCategory, postNewCat } from "../services/category";
+import { editCategory, postNewCat } from "../../app/services/category";
 
 export default function AddNewCatForum(props) {
   const { icon, color, name, id } = props.initData;
 
   const [ActiveIcon, setActiveIcon] = useState(icons[0].Icon);
   const [activeColor, setActiveColor] = useState(`#0166FF`);
-  const [newCatValue, setNewCatVal] = useState('');
+  const [newCatValue, setNewCatVal] = useState("");
   const [changed, setChanged] = useState(false);
 
   if (icon && !changed) {
     setActiveIcon(getYourIcon(icon));
     setActiveColor(color);
     setNewCatVal(name);
-    setChanged(true)
+    setChanged(true);
   }
 
   const reset = () => {
@@ -47,7 +47,6 @@ export default function AddNewCatForum(props) {
   };
 
   const inputHandler = (event) => {
-  
     const { value } = event.target;
     setNewCatVal(value);
   };

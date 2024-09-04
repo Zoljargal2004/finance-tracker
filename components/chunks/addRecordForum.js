@@ -6,17 +6,35 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import { icons } from "../data/icons";
+import { useEffect, useState } from "react";
+import { getYourIcon, icons } from "../../app/data/icons";
+import { fetchCategories } from "@/app/services/category";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AddRecordForum = () => {
   const [type, setType] = useState("EXPENSE");
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState(icons[0].Icon);
+  const [activeCategory, setActiveCategory] = useState(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
 
-  console.log(amount);
+  const [categories, setCategories] = useState([]);
+
+  const load = async () => {
+    setCategories(await fetchCategories());
+    console.log(categories);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
   return (
     <Dialog>
       <DialogTrigger>Open</DialogTrigger>
@@ -38,6 +56,11 @@ const AddRecordForum = () => {
               change={(val) => {
                 setAmount(val);
               }}
+            />
+            <CategoryPicker
+              items={categories}
+              active={activeCategory}
+              chanage={(val) => setActiveCategory(val)}
             />
           </div>
           <div></div>
@@ -93,6 +116,56 @@ const InputAmount = (props) => {
         />
       </span>
     </div>
+  );
+};
+
+const CategoryPicker = (props) => {
+  return (
+    <div className="flex flex-col gap-1">
+      <span>Category</span>
+      <Select selected={props.active} className={``}>
+        <SelectTrigger className="w-full">
+          <SelectValue
+            placeholder="Find or choose category"
+            className="w-full"
+          />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="light">Light</SelectItem>
+          {props.items.map((item) => (
+            <Item
+              change={props.change}
+              item={item}
+              key={`pickCat${item.categoryid}`}
+            />
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+const Item = (props) => {
+  const { categoryid, color, icon_name, name } = props.item;
+  const Component = getYourIcon(icon_name);
+  return (
+    <SelectItem
+      value={categoryid}
+      onClick={() => {
+        console.log("chnage");
+        props.change({
+          categoryid: categoryid,
+          name: name,
+          color: color,
+          icon_name: icon_name,
+        });
+      }}
+    >
+      <div className="flex items-center gap-3 p-4">
+        <Component size={24} style={{ color: color }} />
+        <span>{name}</span>
+      </div>
+    </SelectItem>
   );
 };
 

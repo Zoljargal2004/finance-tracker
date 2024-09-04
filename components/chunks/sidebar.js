@@ -3,8 +3,8 @@
 import Image from "next/image";
 import AddNewCatForum from "./dialog";
 import { useEffect, useState } from "react";
-import { getYourIcon } from "../data/icons";
-import { deleteCategories, fetchCategories } from "../services/category";
+import { getYourIcon } from "../../app/data/icons";
+import { deleteCategories, fetchCategories } from "../../app/services/category";
 import { Pencil, Plus, Trash } from "lucide-react";
 import { Prosto_One } from "next/font/google";
 import { AddRecordForum } from "./addRecordForum";
@@ -67,7 +67,7 @@ const SideBar = () => {
       </div>
 
       <CategorySideBar />
-      <AddRecordForum/>
+      <AddRecordForum />
     </div>
   );
 };
