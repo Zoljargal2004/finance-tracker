@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { getYourIcon, icons } from "../../app/data/icons";
 import { fetchCategories } from "@/app/services/category";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -16,25 +17,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePickerDemo, TimePicker } from "../customUI/datePicker";
+import { Button } from "../ui/button";
+import { addRecord } from "@/app/services/record";
 
 const AddRecordForum = () => {
   const [type, setType] = useState("EXPENSE");
   const [amount, setAmount] = useState(0);
   const [activeCategory, setActiveCategory] = useState(null);
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState();
   const [time, setTime] = useState("");
-
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  console.log(date)
   const [categories, setCategories] = useState([]);
 
-  const load = async () => {
-    setCategories(await fetchCategories());
-    console.log(categories);
+  const submit = () => {
+    addRecord(name, amount, type, description, activeCategory, date, time);
   };
 
-  useEffect(() => {
-    load();
-  }, []);
+  const load = async () => {
+    try {
+      const fetchedCategories = await fetchCategories();
+      setCategories(fetchedCategories);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
 
+  useEffect(
+  ()=>{load()}, []
+  )
   return (
     <Dialog>
       <DialogTrigger>Open</DialogTrigger>
@@ -44,26 +57,59 @@ const AddRecordForum = () => {
             Add Records
           </DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-2 py-5">
+        <div className="grid grid-cols-2 gap-12 py-5">
           <div className="flex flex-col gap-5">
-            <TypePicker
-              active={type}
-              change={(val) => {
-                setType(val);
-              }}
-            />
-            <InputAmount
-              change={(val) => {
-                setAmount(val);
-              }}
-            />
+            <TypePicker active={type} change={(val) => setType(val)} />
+            <InputAmount change={(val) => setAmount(val)} />
             <CategoryPicker
               items={categories}
               active={activeCategory}
-              chanage={(val) => setActiveCategory(val)}
+              change={(val) => setActiveCategory(val)}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <DatePickerDemo
+                activeDate = {date}
+                setDate={(val) => {
+                  setDate(val);
+                  
+                }}
+              />
+              <TimePicker
+                change={(val) => {
+                  setTime(val);
+                }}
+              />
+            </div>
+
+            <Button
+              className={`${
+                type == "EXPENSE"
+                  ? "bg-[#0166FF] text-[#F9FAFB]"
+                  : "bg-[#16A34A] text-[#F9FAFB]"
+              }`}
+              onClick={submit}
+            >
+              Add Record
+            </Button>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span>Payee</span>
+            <Input
+              type="text"
+              className=" bg-[#F3F4F6]"
+              onChange={(event) => {
+                setName(event.value);
+              }}
+            />
+            <span className="mt-[14px]">Note</span>
+            <textarea
+              placeholder="Note here"
+              className="p-4 bg-[#F3F4F6] border-[1px] border-[#D1D5DB] h-full resize-none rounded-[8px]"
+              onChange={(event) => {
+                setDescription(event.value);
+              }}
             />
           </div>
-          <div></div>
         </div>
       </DialogContent>
     </Dialog>
@@ -99,7 +145,7 @@ const TypePicker = (props) => {
 
 const InputAmount = (props) => {
   const handleChange = (event) => {
-    const value = parseFloat(event.target.value) || 0; // Convert to number, default to 0 if NaN
+    const value = parseFloat(event.target.value) || 0;
     props.change(value);
   };
 
@@ -123,7 +169,12 @@ const CategoryPicker = (props) => {
   return (
     <div className="flex flex-col gap-1">
       <span>Category</span>
-      <Select selected={props.active} className={``}>
+      <Select
+        selected={props.active}
+        onValueChange={(event) => {
+          props.change(event);
+        }}
+      >
         <SelectTrigger className="w-full">
           <SelectValue
             placeholder="Find or choose category"
@@ -148,25 +199,17 @@ const CategoryPicker = (props) => {
 const Item = (props) => {
   const { categoryid, color, icon_name, name } = props.item;
   const Component = getYourIcon(icon_name);
+
   return (
-    <SelectItem
-      value={categoryid}
-      onClick={() => {
-        console.log("chnage");
-        props.change({
-          categoryid: categoryid,
-          name: name,
-          color: color,
-          icon_name: icon_name,
-        });
-      }}
-    >
-      <div className="flex items-center gap-3 p-4">
+    <SelectItem value={"aaaa" + categoryid}>
+      <div className="flex items-center gap-3 py-4">
         <Component size={24} style={{ color: color }} />
         <span>{name}</span>
       </div>
     </SelectItem>
   );
 };
+
+export default Item;
 
 export { AddRecordForum };
