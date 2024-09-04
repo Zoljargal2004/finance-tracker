@@ -29,12 +29,12 @@ const AddRecordForum = () => {
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  console.log(date)
+  
   const [categories, setCategories] = useState([]);
-
-  const submit = () => {
-    addRecord(name, amount, type, description, activeCategory, date, time);
+  const submit = async() => {
+    await addRecord(name, amount, type, description, activeCategory, date, time);
   };
+
 
   const load = async () => {
     try {
@@ -44,6 +44,8 @@ const AddRecordForum = () => {
       console.error("Failed to fetch categories:", error);
     }
   };
+
+  
 
   useEffect(
   ()=>{load()}, []
@@ -98,7 +100,7 @@ const AddRecordForum = () => {
               type="text"
               className=" bg-[#F3F4F6]"
               onChange={(event) => {
-                setName(event.value);
+                setName(event.target.value);
               }}
             />
             <span className="mt-[14px]">Note</span>
@@ -106,7 +108,7 @@ const AddRecordForum = () => {
               placeholder="Note here"
               className="p-4 bg-[#F3F4F6] border-[1px] border-[#D1D5DB] h-full resize-none rounded-[8px]"
               onChange={(event) => {
-                setDescription(event.value);
+                setDescription(event.target.value);
               }}
             />
           </div>
