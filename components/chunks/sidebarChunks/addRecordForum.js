@@ -185,12 +185,7 @@ const InputAmount = (props) => {
 };
 
 const CategoryPicker = (props) => {
-  const checkNewTag = (e) => {
-    if (e === "NEW_CAT") {
-      console.log("sadfafsd");
-      props.change("");
-    }
-  };
+  
 
   return (
     <div className="flex flex-col gap-1">
@@ -198,8 +193,7 @@ const CategoryPicker = (props) => {
       <Select
         selected={props.active}
         onValueChange={(event) => {
-          checkNewTag(event);
-          props.change(null);
+          props.change(event);
         }}
       >
         <SelectTrigger className="w-full">
@@ -233,7 +227,7 @@ const Item = (props) => {
   const Component = getYourIcon(icon_name);
 
   return (
-    <SelectItem value={"aaaa" + categoryid}>
+    <SelectItem value={categoryid}>
       <div className="flex items-center gap-3 py-4">
         <Component size={24} style={{ color: color }} />
         <span>{name}</span>

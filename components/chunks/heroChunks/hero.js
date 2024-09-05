@@ -1,9 +1,9 @@
-import { DataTableDemo } from "./WHATEVERITIS";
+import { SimpleTable } from "./WHATEVERITIS";
 
 const Records = () => {
   return (
     <div>
-      <DataTableDemo />
+      <SimpleTable />
     </div>
   );
 };
