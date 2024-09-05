@@ -17,12 +17,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { getYourIcon, icons } from "../../app/data/icons";
+import { getYourIcon, icons } from "../../../app/data/icons";
 import { Check } from "lucide-react";
-import colors from "../../app/data/colors";
+import colors from "../../../app/data/colors";
 
 import { act, useEffect, useState } from "react";
-import { editCategory, postNewCat } from "../../app/services/category";
+import { editCategory, postNewCat } from "../../../app/services/category";
 
 export default function AddNewCatForum(props) {
   const { icon, color, name, id } = props.initData;

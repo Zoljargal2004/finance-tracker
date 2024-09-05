@@ -1,13 +1,12 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { getYourIcon, icons } from "../../app/data/icons";
+import { getYourIcon, icons } from "../../../app/data/icons";
 import { fetchCategories } from "@/app/services/category";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,9 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePickerDemo, TimePicker } from "../customUI/datePicker";
-import { Button } from "../ui/button";
+import { DatePickerDemo, TimePicker } from "../../customUI/datePicker";
+import { Button } from "../../ui/button";
 import { addRecord } from "@/app/services/record";
+
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { SquarePlus } from "lucide-react";
 
 const AddRecordForum = () => {
   const [type, setType] = useState("EXPENSE");
@@ -29,12 +32,25 @@ const AddRecordForum = () => {
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  
+
   const [categories, setCategories] = useState([]);
-  const submit = async() => {
-    await addRecord(name, amount, type, description, activeCategory, date, time);
+  const submit = async () => {
+    await addRecord(
+      name,
+      amount,
+      type,
+      description,
+      activeCategory,
+      date,
+      time
+    );
   };
 
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const search = searchParams.get("createRecord");
 
   const load = async () => {
     try {
@@ -45,14 +61,16 @@ const AddRecordForum = () => {
     }
   };
 
-  
-
-  useEffect(
-  ()=>{load()}, []
-  )
+  useEffect(() => {
+    load();
+  }, []);
   return (
-    <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
+    <Dialog
+      open={search == "new"}
+      onOpenChange={() => {
+        router.push("?");
+      }}
+    >
       <DialogContent className="w-full max-w-[792px]">
         <DialogHeader>
           <DialogTitle className="py-5 border-[#E2E8F0] border-b-[1px]">
@@ -70,10 +88,9 @@ const AddRecordForum = () => {
             />
             <div className="grid grid-cols-2 gap-4">
               <DatePickerDemo
-                activeDate = {date}
+                activeDate={date}
                 setDate={(val) => {
                   setDate(val);
-                  
                 }}
               />
               <TimePicker
@@ -168,13 +185,21 @@ const InputAmount = (props) => {
 };
 
 const CategoryPicker = (props) => {
+  const checkNewTag = (e) => {
+    if (e === "NEW_CAT") {
+      console.log("sadfafsd");
+      props.change("");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-1">
       <span>Category</span>
       <Select
         selected={props.active}
         onValueChange={(event) => {
-          props.change(event);
+          checkNewTag(event);
+          props.change(null);
         }}
       >
         <SelectTrigger className="w-full">
@@ -184,7 +209,12 @@ const CategoryPicker = (props) => {
           />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="light">Light</SelectItem>
+          {/* <SelectItem value="NEW_CAT">
+            <div className="flex items-center gap-3 py-4">
+              <SquarePlus size={24} />
+              <span>Add Category</span>
+            </div>
+          </SelectItem> */}
           {props.items.map((item) => (
             <Item
               change={props.change}

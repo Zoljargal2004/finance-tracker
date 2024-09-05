@@ -3,19 +3,27 @@
 import Image from "next/image";
 import AddNewCatForum from "./dialog";
 import { useEffect, useState } from "react";
-import { getYourIcon } from "../../app/data/icons";
-import { deleteCategories, fetchCategories } from "../../app/services/category";
+import { getYourIcon } from "../../../app/data/icons";
+import {
+  deleteCategories,
+  fetchCategories,
+} from "../../../app/services/category";
 import { Pencil, Plus, Trash } from "lucide-react";
-import { Prosto_One } from "next/font/google";
 import { AddRecordForum } from "./addRecordForum";
 
+import { useRouter } from "next/navigation";
+
 const SideBar = () => {
+  const router = useRouter();
+
   return (
-    <div className="py-6 px-4 flex flex-col gap-6 rounded-lg max-w-xs border border-gray-300 bg-gray-100">
+    <aside className="py-6 px-4 flex flex-col gap-6 rounded-lg max-w-[282px] w-full border border-gray-300 bg-gray-100">
       <h1 className="text-2xl font-semibold">Records</h1>
       <button
         className="bg-blue-600 rounded-full flex items-center justify-center py-1 text-white text-base gap-1"
-        onClick={() => {}}
+        onClick={() => {
+          router.push("?createRecord=new");
+        }}
       >
         <Image width={20} height={20} src="/add.svg" alt="Add" />
         Add
@@ -68,7 +76,7 @@ const SideBar = () => {
 
       <CategorySideBar />
       <AddRecordForum />
-    </div>
+    </aside>
   );
 };
 
