@@ -1,6 +1,6 @@
 "use client";
 
-import { icons } from "@/app/data/icons";
+import { getYourIcon, icons } from "@/app/data/icons";
 import { getRecords } from "@/app/services/record";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getDate } from "date-fns";
@@ -14,19 +14,18 @@ const Records = () => {
   );
 };
 
-const CustomCard = () => {
-  const TheIcon = icons[0].Icon;
-  const color = "#0166FF";
-  const name = "Lending and  Renting";
-  const time = "14:00";
-  const amount = 1000;
-  const type = "INCOME";
+const CustomCard = (props) => {
+  console.log("sd")
+  const {icon_name, color, name, amount, transactiontype, transactiontime, id} = props.item
+  const TheIcon = getYourIcon(icon_name);
+  const time = transactiontime;
+  const type = transactiontype;
 
   return (
     <div className="rounded-[12px] w-full flex justify-between items-center border-[#E5E7EB] border-[1px] py-3 px-6">
       <div className="flex gap-4 items-center">
         <Checkbox className={`size-6`} />
-        <div className="size-10 bg-[#0166FF] content-center rounded-full">
+        <div className={`size-10 content-center rounded-full`} style={{background: color}}>
           <TheIcon size={24} className="rounded-full m-auto text-white" />
         </div>
         <div className="flex flex-col">
@@ -46,22 +45,27 @@ const CustomCard = () => {
   );
 };
 
-const load = () => {};
 
-const TheDay = async () => {
+const TheDay =  () => {
   const [list, setList] = useState([]);
-  const day = "2024-9-4";
+  const day = "2024-09-04";
+  
+  const load = async() => {
+    setList(await getRecords(day))
+  };
+  
+
   useEffect(() => {
-    async () => {
-      setList(await getRecords(day));
-    };
+    load()
   }, []);
-  console.log(list);
+  console.log(list)
 
   return (
     <div className="flex flex-col gap-3">
       <span className="">{day}</span>
-      <CustomCard />
+      {list.map(item => (
+        <CustomCard key={item.id} item={item}/>
+      ))}
     </div>
   );
 };

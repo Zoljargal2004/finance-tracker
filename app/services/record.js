@@ -26,19 +26,16 @@ export const addRecord = async (
   }
 };
 
-export const getRecords = async (date) => {
+export const getRecords = async (date, category) => {
   try {
-    const res = await fetch(`http://localhost:4000/record/list`, {
+    const res = await fetch(`http://localhost:4000/record/list/?date=${date}&category=${category}`, {
       method: "GET",
       headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        date: date,
-      }),
     });
 
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error(error);
+    console.error('HERE IS THE PROB', error);
   }
 };

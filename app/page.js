@@ -5,7 +5,7 @@ import SideBar from "../components/chunks/sidebarChunks/sidebar";
 
 const Home = () => {
   return (
-    <div className="flex">
+    <div className="flex max-w-[1200px] m-auto gap-6">
       <SideBar />
       <Records />
     </div>
