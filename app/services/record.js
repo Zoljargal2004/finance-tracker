@@ -26,16 +26,22 @@ export const addRecord = async (
   }
 };
 
-export const getRecords = async (date, category) => {
+export const getRecords = async (date, category, type, min, max) => {
   try {
-    const res = await fetch(`http://localhost:4000/record/list/?date=${date}&category=${category}`, {
-      method: "GET",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    });
+    const res = await fetch(
+      `http://localhost:4000/record/list/?date=${date}&category=${
+        category || ""
+      }&type=${(type && type != "ALL" && type) || ""}&min=${min}&max=${max}`,
+      {
+        method: "GET",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      }
+    );
 
     const data = await res.json();
+    console.log(data);
     return data;
   } catch (error) {
-    console.error('HERE IS THE PROB', error);
+    console.error("HERE IS THE PROB", error);
   }
 };

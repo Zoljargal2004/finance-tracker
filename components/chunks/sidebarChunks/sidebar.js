@@ -12,6 +12,7 @@ import { Pencil, Plus, Trash } from "lucide-react";
 import { AddRecordForum } from "./addRecordForum";
 
 import { useRouter } from "next/navigation";
+import { UpdateIcon } from "@radix-ui/react-icons";
 
 const SideBar = () => {
   const router = useRouter();
@@ -34,47 +35,11 @@ const SideBar = () => {
         className="border border-gray-300 p-1 rounded-md"
         aria-label="Search"
       />
-      <div>
-        <h2 className="mb-4 font-semibold">Types</h2>
-        <div>
-          <input
-            type="radio"
-            id="all"
-            name="select_type"
-            value="All"
-            aria-label="All"
-          />
-          <label htmlFor="all" className="ml-2">
-            All
-          </label>
-        </div>
-        <div>
-          <input
-            type="radio"
-            id="income"
-            name="select_type"
-            value="Income"
-            aria-label="Income"
-          />
-          <label htmlFor="income" className="ml-2">
-            Income
-          </label>
-        </div>
-        <div>
-          <input
-            type="radio"
-            id="expenses"
-            name="select_type"
-            value="Expenses"
-            aria-label="Expenses"
-          />
-          <label htmlFor="expenses" className="ml-2">
-            Expenses
-          </label>
-        </div>
-      </div>
-
+      <TypeChoose />
       <CategorySideBar />
+      <ValueRange />
+
+      {/* will pop */}
       <AddRecordForum />
     </aside>
   );
@@ -152,12 +117,28 @@ const CategorySideBar = () => {
 
 const SideBarCatItem = (props) => {
   const Icon_component = getYourIcon(props.icon_name);
+  const router = useRouter();
+
   return (
-    <div className="flex justify-between items-center">
-      <button className="flex items-center gap-2">
+    <div
+      className="flex justify-between items-center"
+      onClick={() => {
+        const currentQuery = new URLSearchParams(window.location.search);
+
+        currentQuery.set("category", props.id);
+
+        const newQueryString = currentQuery.toString();
+        const newUrl = `${window.location.pathname}${
+          newQueryString ? "?" + newQueryString : ""
+        }`;
+
+        router.push(newUrl);
+      }}
+    >
+      <div className="flex items-center gap-2">
         <Icon_component size={20} style={{ color: props.color }} />
         {props.name}
-      </button>
+      </div>
       <div className="flex items-center gap-2">
         <Pencil
           size={15}
@@ -171,6 +152,127 @@ const SideBarCatItem = (props) => {
             props.reset();
           }}
           size={15}
+        />
+      </div>
+    </div>
+  );
+};
+
+const TypeChoose = () => {
+  const router = useRouter();
+  const upadate = (event) => {
+    //IDK WHAZ GOIN ON
+
+    const currentQuery = new URLSearchParams(window.location.search);
+
+    currentQuery.set("type", event.target.value);
+
+    const newQueryString = currentQuery.toString();
+    const newUrl = `${window.location.pathname}${
+      newQueryString ? "?" + newQueryString : ""
+    }`;
+
+    router.push(newUrl);
+  };
+  return (
+    <div>
+      <h2 className="mb-4 font-semibold">Types</h2>
+      <div>
+        <input
+          type="radio"
+          id="all"
+          name="select_type"
+          value="ALL"
+          aria-label="All"
+          onChange={(e) => {
+            upadate(e);
+          }}
+        />
+        <label htmlFor="all" className="ml-2">
+          All
+        </label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          id="income"
+          name="select_type"
+          value="INCOME"
+          aria-label="Income"
+          onChange={(e) => {
+            upadate(e);
+          }}
+        />
+        <label htmlFor="income" className="ml-2">
+          Income
+        </label>
+      </div>
+      <div>
+        <input
+          type="radio"
+          id="expenses"
+          name="select_type"
+          value="EXPENSE"
+          aria-label="Expenses"
+          onChange={(e) => {
+            upadate(e);
+          }}
+        />
+        <label htmlFor="expenses" className="ml-2">
+          Expenses
+        </label>
+      </div>
+    </div>
+  );
+};
+
+const ValueRange = () => {
+  const router = useRouter();
+
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(10 ** 10);
+
+  useEffect(() => {
+    updateRange(min, max);
+  }, [min, max]);
+
+  const updateRange = (min, max) => {
+    //IDK WHAZ GOIN ON
+
+    const currentQuery = new URLSearchParams(window.location.search);
+
+    currentQuery.set("min", min);
+    currentQuery.set("max", max);
+
+    const newQueryString = currentQuery.toString();
+    const newUrl = `${window.location.pathname}${
+      newQueryString ? "?" + newQueryString : ""
+    }`;
+
+    router.push(newUrl);
+  };
+
+  return (
+    <div>
+      <h2 className="mb-4 font-semibold">Range</h2>
+      <div className="grid grid-cols-2 gap-2 max-w-[100px]">
+        <label>Min</label>
+        <label>Max</label>
+        <input
+          type="number"
+          min={0}
+          max={10 ** 10}
+          onChange={(event) => {
+            setMin(event.target.value);
+          }}
+        />
+        <input
+          type="number"
+          min={0}
+          max={10 ** 10}
+          onChange={(event) => {
+            setMax(event.target.value);
+          }}
         />
       </div>
     </div>

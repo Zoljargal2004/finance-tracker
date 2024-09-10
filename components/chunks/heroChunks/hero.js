@@ -3,20 +3,33 @@
 import { getYourIcon, icons } from "@/app/data/icons";
 import { getRecords } from "@/app/services/record";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getDate } from "date-fns";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const Records = () => {
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  const type = searchParams.get("type");
+  const min = searchParams.get("min");
+  const max = searchParams.get("max");
+
   return (
     <div className="w-full">
-      <TheDay />
+      <TheDay category={category} type={type} min={min} max={max} />
     </div>
   );
 };
 
 const CustomCard = (props) => {
-  console.log("sd")
-  const {icon_name, color, name, amount, transactiontype, transactiontime, id} = props.item
+  const {
+    icon_name,
+    color,
+    name,
+    amount,
+    transactiontype,
+    transactiontime,
+    id,
+  } = props.item;
   const TheIcon = getYourIcon(icon_name);
   const time = transactiontime;
   const type = transactiontype;
@@ -25,7 +38,10 @@ const CustomCard = (props) => {
     <div className="rounded-[12px] w-full flex justify-between items-center border-[#E5E7EB] border-[1px] py-3 px-6">
       <div className="flex gap-4 items-center">
         <Checkbox className={`size-6`} />
-        <div className={`size-10 content-center rounded-full`} style={{background: color}}>
+        <div
+          className={`size-10 content-center rounded-full`}
+          style={{ background: color }}
+        >
           <TheIcon size={24} className="rounded-full m-auto text-white" />
         </div>
         <div className="flex flex-col">
@@ -45,29 +61,36 @@ const CustomCard = (props) => {
   );
 };
 
-
-const TheDay =  () => {
+const TheDay = (props) => {
   const [list, setList] = useState([]);
   const day = "2024-09-04";
-  
-  const load = async() => {
-    setList(await getRecords(day))
+
+  const load = async () => {
+    setList(
+      await getRecords(day, props.category, props.type, props.min, props.max)
+    );
   };
-  
 
   useEffect(() => {
-    load()
-  }, []);
-  console.log(list)
+    load();
+  }, [props]);
 
   return (
     <div className="flex flex-col gap-3">
       <span className="">{day}</span>
-      {list.map(item => (
-        <CustomCard key={item.id} item={item}/>
+      {list.map((item) => (
+        <CustomCard key={item.id} item={item} />
       ))}
     </div>
   );
 };
+
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 
 export default Records;
