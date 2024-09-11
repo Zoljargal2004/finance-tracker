@@ -31,17 +31,33 @@ export const getRecords = async (date, category, type, min, max) => {
     const res = await fetch(
       `http://localhost:4000/record/list/?date=${date}&category=${
         category || ""
-      }&type=${(type && type != "ALL" && type) || ""}&min=${min}&max=${max}`,
+      }&type=${(type && type != "ALL" && type) || ""}&min=${min || ""}&max=${
+        max || ""
+      }`,
       {
         method: "GET",
         headers: { "Content-type": "application/json; charset=UTF-8" },
       }
     );
-
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("HERE IS THE PROB", error);
+  }
+};
+
+export const getAmount = async (type) => {
+  try {
+    const res = await fetch(
+      `http://localhost:4000/record/amount/?type=${type}`,
+      {
+        method: "GET",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      }
+    );
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Frontend error: ", error);
   }
 };

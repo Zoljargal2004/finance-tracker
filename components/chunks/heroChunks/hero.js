@@ -5,6 +5,7 @@ import { getRecords } from "@/app/services/record";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 const Records = () => {
   const searchParams = useSearchParams();
@@ -50,9 +51,7 @@ const CustomCard = (props) => {
         </div>
       </div>
       <span
-        className={
-          (amount == "EXPENSE" && "text-[#F54949]") || "text-[#23E01F]"
-        }
+        className={(type == "EXPENSE" && "text-[#F54949]") || "text-[#23E01F]"}
       >
         {(type == "EXPENSE" && "-") || "+"}
         {amount}
@@ -63,7 +62,7 @@ const CustomCard = (props) => {
 
 const TheDay = (props) => {
   const [list, setList] = useState([]);
-  const day = "2024-09-04";
+  const [day, setDay] = useState(formatDate(new Date()));
 
   const load = async () => {
     setList(
@@ -73,11 +72,26 @@ const TheDay = (props) => {
 
   useEffect(() => {
     load();
-  }, [props]);
+  }, [props, day]);
+
+  if (!list) {
+    load();
+    return <div>Loading</div>;
+  }
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="">{day}</span>
+      <div className="flex gap-2 items-center">
+        <Input
+          type="date"
+          className="w-[150px]"
+          onChange={(e) => {
+            setDay(e.target.value);
+          }}
+          value={day}
+        />
+      </div>
+
       {list.map((item) => (
         <CustomCard key={item.id} item={item} />
       ))}
