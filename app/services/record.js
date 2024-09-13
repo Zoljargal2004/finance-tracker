@@ -46,10 +46,10 @@ export const getRecords = async (date, category, type, min, max) => {
   }
 };
 
-export const getAmount = async (type) => {
+export const getAmount = async (type, month) => {
   try {
     const res = await fetch(
-      `http://localhost:4000/record/amount/?type=${type}`,
+      `http://localhost:4000/record/amount/?type=${type}&month=${month}`,
       {
         method: "GET",
         headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -59,5 +59,41 @@ export const getAmount = async (type) => {
     return data;
   } catch (error) {
     console.error("Frontend error: ", error);
+  }
+};
+
+export const getRecordsGroupByCategory = async () => {
+  try {
+    const res = await fetch(`http://localhost:4000/record/groupByCategory`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Frontend error: ", error);
+  }
+};
+
+export const getRecentRecords = async (n) => {
+  try {
+    const res = await fetch(
+      `http://localhost:4000/record/getRecent?number=${n}`
+    );
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Frontend Error : ", error);
+  }
+};
+
+export const deleteRecord = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:4000/record/delete`, {
+      method: "DELETE",
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+  } catch (error) {
+    console.error("Fetching error: ", error);
   }
 };

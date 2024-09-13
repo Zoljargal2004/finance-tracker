@@ -2,7 +2,6 @@
   "name": "finance_tracker",
   "version": "0.1.0",
   "private": true,
-  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,6 +10,7 @@
     "analyze": "webpack-bundle-analyzer dist/stats.json"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.5.2",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
@@ -30,6 +30,7 @@
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
+    "recharts": "^2.12.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "yarn": "^1.22.22"
@@ -39,5 +40,4 @@
     "tailwindcss": "^3.4.1",
     "webpack-bundle-analyzer": "^4.10.2"
   }
-  
 }

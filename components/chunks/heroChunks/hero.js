@@ -1,11 +1,12 @@
 "use client";
 
 import { getYourIcon, icons } from "@/app/data/icons";
-import { getRecords } from "@/app/services/record";
+import { deleteRecord, getRecords } from "@/app/services/record";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { Trash } from "lucide-react";
 
 const Records = () => {
   const searchParams = useSearchParams();
@@ -21,11 +22,11 @@ const Records = () => {
   );
 };
 
-const CustomCard = (props) => {
+export const CustomCard = (props) => {
   const {
     icon_name,
     color,
-    name,
+    recordname,
     amount,
     transactiontype,
     transactiontime,
@@ -38,7 +39,8 @@ const CustomCard = (props) => {
   return (
     <div className="rounded-[12px] w-full flex justify-between items-center border-[#E5E7EB] border-[1px] py-3 px-6">
       <div className="flex gap-4 items-center">
-        <Checkbox className={`size-6`} />
+        {props.recent || <Checkbox className={`size-6`} />}
+
         <div
           className={`size-10 content-center rounded-full`}
           style={{ background: color }}
@@ -46,16 +48,29 @@ const CustomCard = (props) => {
           <TheIcon size={24} className="rounded-full m-auto text-white" />
         </div>
         <div className="flex flex-col">
-          <span className="font-semibold">{name}</span>
+          <span className="font-semibold">{recordname}</span>
           <span className="text-[#6B7280] text-[12px]">{time}</span>
         </div>
       </div>
-      <span
-        className={(type == "EXPENSE" && "text-[#F54949]") || "text-[#23E01F]"}
-      >
-        {(type == "EXPENSE" && "-") || "+"}
-        {amount}
-      </span>
+      <div className="flex gap-2 items-center">
+        <span
+          className={
+            (type == "EXPENSE" && "text-[#F54949]") || "text-[#23E01F]"
+          }
+        >
+          {(type == "EXPENSE" && "-") || "+"}
+          {amount}
+        </span>
+        <button>
+          <Trash
+            size={20}
+            onClick={async () => {
+              await deleteRecord(id);
+              props.reset();
+            }}
+          />
+        </button>
+      </div>
     </div>
   );
 };
@@ -65,6 +80,7 @@ const TheDay = (props) => {
   const [day, setDay] = useState(formatDate(new Date()));
 
   const load = async () => {
+    console.log("loaded");
     setList(
       await getRecords(day, props.category, props.type, props.min, props.max)
     );
@@ -93,7 +109,13 @@ const TheDay = (props) => {
       </div>
 
       {list.map((item) => (
-        <CustomCard key={item.id} item={item} />
+        <CustomCard
+          key={item.id}
+          item={item}
+          reset={() => {
+            load();
+          }}
+        />
       ))}
     </div>
   );

@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
@@ -10,11 +11,12 @@ export const Header = () => {
           <Link href="/">Dashboard</Link>
           <Link href="/records">Records</Link>
         </div>
-        <div>
+        <div className="flex gap-6">
           <button className="items-center flex gap-1 bg-[#0166FF] text-[#FFF] rounded-full px-4 py-1.5  ">
             <Plus size={20} />
             <span>Record</span>
           </button>
+          <UserButton className="size-10" />
         </div>
       </div>
     </div>
