@@ -8,19 +8,22 @@ export const addRecord = async (
   time
 ) => {
   try {
-    const res = fetch(`http://localhost:4000/record/add`, {
-      method: "POST",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        name: name,
-        amount: amount,
-        type: type,
-        description: description,
-        categoryID: categoryID,
-        date: date,
-        time: time,
-      }),
-    });
+    const res = fetch(
+      `https://finance-tracker-service.onrender.com/record/add`,
+      {
+        method: "POST",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({
+          name: name,
+          amount: amount,
+          type: type,
+          description: description,
+          categoryID: categoryID,
+          date: date,
+          time: time,
+        }),
+      }
+    );
   } catch (error) {
     console.log(error);
   }
@@ -29,7 +32,7 @@ export const addRecord = async (
 export const getRecords = async (date, category, type, min, max) => {
   try {
     const res = await fetch(
-      `http://localhost:4000/record/list/?date=${date}&category=${
+      `https://finance-tracker-service.onrender.com/record/list/?date=${date}&category=${
         category || ""
       }&type=${(type && type != "ALL" && type) || ""}&min=${min || ""}&max=${
         max || ""
@@ -49,7 +52,7 @@ export const getRecords = async (date, category, type, min, max) => {
 export const getAmount = async (type, month) => {
   try {
     const res = await fetch(
-      `http://localhost:4000/record/amount/?type=${type}&month=${month}`,
+      `https://finance-tracker-service.onrender.com/record/amount/?type=${type}&month=${month}`,
       {
         method: "GET",
         headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -64,7 +67,9 @@ export const getAmount = async (type, month) => {
 
 export const getRecordsGroupByCategory = async () => {
   try {
-    const res = await fetch(`http://localhost:4000/record/groupByCategory`);
+    const res = await fetch(
+      `https://finance-tracker-service.onrender.com/record/groupByCategory`
+    );
     const data = await res.json();
     return data;
   } catch (error) {
@@ -75,7 +80,7 @@ export const getRecordsGroupByCategory = async () => {
 export const getRecentRecords = async (n) => {
   try {
     const res = await fetch(
-      `http://localhost:4000/record/getRecent?number=${n}`
+      `https://finance-tracker-service.onrender.com/record/getRecent?number=${n}`
     );
     const data = await res.json();
     return data;
@@ -86,13 +91,16 @@ export const getRecentRecords = async (n) => {
 
 export const deleteRecord = async (id) => {
   try {
-    const res = await fetch(`http://localhost:4000/record/delete`, {
-      method: "DELETE",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        id: id,
-      }),
-    });
+    const res = await fetch(
+      `https://finance-tracker-service.onrender.com/record/delete`,
+      {
+        method: "DELETE",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+        body: JSON.stringify({
+          id: id,
+        }),
+      }
+    );
   } catch (error) {
     console.error("Fetching error: ", error);
   }

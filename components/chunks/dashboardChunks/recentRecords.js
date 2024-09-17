@@ -18,7 +18,7 @@ export const RecentRecords = () => {
     <div className="w-full">
       <span className="text-2xl">Recent Records</span>
       {data.map((item) => (
-        <CustomCard item={item} recent={true} />
+        <CustomCard key={item.id} item={item} recent={true} />
       ))}
     </div>
   );

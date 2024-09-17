@@ -1,3 +1,5 @@
+"use client";
+
 import { Chart } from "@/components/customUI/chart";
 import { Diagram } from "@/components/customUI/diagram";
 
