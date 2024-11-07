@@ -26,6 +26,7 @@ import { editCategory, postNewCat } from "../../../app/services/category";
 
 export default function AddNewCatForum(props) {
   const { icon, color, name, id } = props.initData;
+  const { user } = props;
 
   const [ActiveIcon, setActiveIcon] = useState(icons[0].Icon);
   const [activeColor, setActiveColor] = useState(`#0166FF`);
@@ -113,8 +114,9 @@ export default function AddNewCatForum(props) {
                 <Button
                   type="button"
                   className="flex-1 rounded-[99999px] bg-[green]"
-                  onClick={async () => {
-                    await postNewCat(
+                  onClick={() => {
+                    postNewCat(
+                      user.id,
                       newCatValue,
                       icons.filter((obj) => obj.Icon == ActiveIcon)[0].name,
                       activeColor

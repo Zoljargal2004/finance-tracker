@@ -20,14 +20,17 @@ import {
 } from "@/components/ui/chart";
 
 import { getRecordsGroupByCategory } from "@/app/services/record";
+import { useUser } from "@clerk/nextjs";
 
 export const description = "A donut chart with text";
 
 export function Diagram() {
   const [chartData, setChartData] = React.useState([]);
   const [chartConfig, setChartConfig] = React.useState({});
+  const { user } = useUser();
 
   const getData = async () => {
+    if (!user) return;
     const datas = await getRecordsGroupByCategory();
     const updatedConfig = {};
 
@@ -50,7 +53,7 @@ export function Diagram() {
 
   React.useEffect(() => {
     getData();
-  }, []);
+  }, [user]);
 
   const totalSum = chartData.reduce(
     (acc, cur) => acc + parseFloat(cur.sum || 0),

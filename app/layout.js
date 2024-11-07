@@ -8,6 +8,7 @@ import {
   SignedIn,
   SignedOut,
 } from "@clerk/nextjs";
+import { SignIn } from "@/components/chunks/notSignedIn/signIn";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={inter.className}>
           <SignedOut>
-            <SignInButton />
+            <SignIn>
+              <SignInButton />
+            </SignIn>
           </SignedOut>
           <SignedIn>
             <Header />

@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +23,7 @@ import { addRecord } from "@/app/services/record";
 
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { SquarePlus } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 const AddRecordForum = () => {
   const [type, setType] = useState("EXPENSE");
@@ -33,9 +34,12 @@ const AddRecordForum = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
+  const { user } = useUser();
+
   const [categories, setCategories] = useState([]);
   const submit = async () => {
     await addRecord(
+      user.id,
       name,
       amount,
       type,
@@ -53,8 +57,11 @@ const AddRecordForum = () => {
   const search = searchParams.get("createRecord");
 
   const load = async () => {
+    if (!user) {
+      return;
+    }
     try {
-      const fetchedCategories = await fetchCategories();
+      const fetchedCategories = await fetchCategories(user.id);
       setCategories(fetchedCategories);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
@@ -63,10 +70,10 @@ const AddRecordForum = () => {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [user]);
   return (
     <Dialog
-      open={search == "new"}
+      open={search == "true"}
       onOpenChange={() => {
         router.push("?");
       }}
@@ -185,8 +192,6 @@ const InputAmount = (props) => {
 };
 
 const CategoryPicker = (props) => {
-  
-
   return (
     <div className="flex flex-col gap-1">
       <span>Category</span>
@@ -225,7 +230,6 @@ const CategoryPicker = (props) => {
 const Item = (props) => {
   const { categoryid, color, icon_name, name } = props.item;
   const Component = getYourIcon(icon_name);
-
   return (
     <SelectItem value={categoryid}>
       <div className="flex items-center gap-3 py-4">

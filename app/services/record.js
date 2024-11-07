@@ -1,4 +1,7 @@
+import { backLink } from "./category";
+
 export const addRecord = async (
+  userid,
   name,
   amount,
   type,
@@ -7,36 +10,32 @@ export const addRecord = async (
   date,
   time
 ) => {
+  if (!userid) return [];
   try {
-    const res = fetch(
-      `https://finance-tracker-service.onrender.com/record/add`,
-      {
-        method: "POST",
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-        body: JSON.stringify({
-          name: name,
-          amount: amount,
-          type: type,
-          description: description,
-          categoryID: categoryID,
-          date: date,
-          time: time,
-        }),
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
+    const res = fetch(`${backLink}/record/add`, {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+      body: JSON.stringify({
+        userid: userid,
+        name: name,
+        amount: amount,
+        type: type,
+        description: description,
+        categoryID: categoryID,
+        date: date,
+        time: time,
+      }),
+    });
+  } catch (error) {}
 };
 
-export const getRecords = async (date, category, type, min, max) => {
+export const getRecords = async (userid, date, category, type, min, max) => {
+  if (!userid) return [];
   try {
     const res = await fetch(
-      `https://finance-tracker-service.onrender.com/record/list/?date=${date}&category=${
-        category || ""
-      }&type=${(type && type != "ALL" && type) || ""}&min=${min || ""}&max=${
-        max || ""
-      }`,
+      `${backLink}/record/list/?date=${date}&category=${category || ""}&type=${
+        (type && type != "ALL" && type) || ""
+      }&min=${min || ""}&max=${max || ""}&userid=${userid}`,
       {
         method: "GET",
         headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -49,10 +48,11 @@ export const getRecords = async (date, category, type, min, max) => {
   }
 };
 
-export const getAmount = async (type, month) => {
+export const getAmount = async (userid, type, month) => {
+  if (!userid) return [];
   try {
     const res = await fetch(
-      `https://finance-tracker-service.onrender.com/record/amount/?type=${type}&month=${month}`,
+      `${backLink}/record/amount/?type=${type}&month=${month}&userid=${userid}`,
       {
         method: "GET",
         headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -65,10 +65,11 @@ export const getAmount = async (type, month) => {
   }
 };
 
-export const getRecordsGroupByCategory = async () => {
+export const getRecordsGroupByCategory = async (userid) => {
+  if (!userid) return [];
   try {
     const res = await fetch(
-      `https://finance-tracker-service.onrender.com/record/groupByCategory`
+      `${backLink}/record/groupByCategory&userid=${userid}`
     );
     const data = await res.json();
     return data;
@@ -77,10 +78,11 @@ export const getRecordsGroupByCategory = async () => {
   }
 };
 
-export const getRecentRecords = async (n) => {
+export const getRecentRecords = async (userid, n) => {
+  if (!userid) return [];
   try {
     const res = await fetch(
-      `https://finance-tracker-service.onrender.com/record/getRecent?number=${n}`
+      `${backLink}/record/getRecent?number=${n}&userid=${userid}`
     );
     const data = await res.json();
     return data;
@@ -91,16 +93,13 @@ export const getRecentRecords = async (n) => {
 
 export const deleteRecord = async (id) => {
   try {
-    const res = await fetch(
-      `https://finance-tracker-service.onrender.com/record/delete`,
-      {
-        method: "DELETE",
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-        body: JSON.stringify({
-          id: id,
-        }),
-      }
-    );
+    const res = await fetch(`${backLink}/record/delete`, {
+      method: "DELETE",
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
   } catch (error) {
     console.error("Fetching error: ", error);
   }

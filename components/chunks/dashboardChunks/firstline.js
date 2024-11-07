@@ -2,6 +2,8 @@
 
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { getAmount } from "@/app/services/record";
+import { useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 
 export default function FirstLineOfItems() {
   return (
@@ -13,15 +15,30 @@ export default function FirstLineOfItems() {
   );
 }
 
-const IncomeAndExpense = async ({ type }) => {
-  const thisMonthData = await getAmount(
-    type,
-    String(new Date().getMonth() + 1).padStart(2, "0")
-  );
-  const lastMonthData = await getAmount(
-    type,
-    String(new Date().getMonth()).padStart(2, "0")
-  );
+const IncomeAndExpense = ({ type }) => {
+  const { user } = useUser();
+  const [thisMonthData, setThisMonthData] = useState(0);
+  const [lastMonthData, setLastMonthData] = useState(0);
+  const fetchData = async () => {
+    if (!user) return;
+    setThisMonthData(
+      await getAmount(
+        user.id,
+        type,
+        String(new Date().getMonth() + 1).padStart(2, "0")
+      )
+    );
+    setLastMonthData(
+      await getAmount(
+        user.id,
+        type,
+        String(new Date().getMonth()).padStart(2, "0")
+      )
+    );
+  };
+  useEffect(() => {
+    fetchData();
+  }, [user]);
   const comparasionPercent = (
     (Math.abs(thisMonthData - lastMonthData) * 100) /
     lastMonthData

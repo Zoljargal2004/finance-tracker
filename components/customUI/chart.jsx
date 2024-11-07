@@ -21,6 +21,7 @@ import { getAmount } from "@/app/services/record";
 import { getMonth } from "date-fns";
 import { useEffect, useState } from "react";
 import { Spinner } from "./loadingSpinner";
+import { useUser } from "@clerk/nextjs";
 
 export const description = "A multiple bar chart";
 
@@ -53,12 +54,21 @@ const chartConfig = {
 export function Chart() {
   const [chartData, setChartData] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const { user } = useUser();
 
   const GetDatas = async () => {
     const datas = [];
     for (let i = 1; i <= new Date().getMonth() + 1; i++) {
-      const income = await getAmount("INCOME", String(i).padStart(2, "0"));
-      const outcome = await getAmount("EXPENSE", String(i).padStart(2, "0"));
+      const income = await getAmount(
+        user.id,
+        "INCOME",
+        String(i).padStart(2, "0")
+      );
+      const outcome = await getAmount(
+        user.id,
+        "EXPENSE",
+        String(i).padStart(2, "0")
+      );
       const data = {
         month: months[i - 1],
         income: Number(income),
@@ -70,8 +80,9 @@ export function Chart() {
     setLoading(false);
   };
   useEffect(() => {
+    if (!user) return;
     GetDatas();
-  }, []);
+  }, [user]);
 
   return (
     <Card>

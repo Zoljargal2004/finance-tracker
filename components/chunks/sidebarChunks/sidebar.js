@@ -13,6 +13,7 @@ import { AddRecordForum } from "./addRecordForum";
 
 import { useRouter } from "next/navigation";
 import { UpdateIcon } from "@radix-ui/react-icons";
+import { useUser } from "@clerk/nextjs";
 
 const SideBar = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const SideBar = () => {
       <button
         className="bg-blue-600 rounded-full flex items-center justify-center py-1 text-white text-base gap-1"
         onClick={() => {
-          router.push("?createRecord=new");
+          router.push("?createRecord=true");
         }}
       >
         <Image width={20} height={20} src="/add.svg" alt="Add" />
@@ -55,14 +56,15 @@ const CategorySideBar = () => {
     name: "",
     id: "",
   });
-
+  const { user } = useUser();
   const load = async () => {
-    setData(await fetchCategories());
+    if (!user) return;
+    setData(await fetchCategories(user.id));
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -110,6 +112,7 @@ const CategorySideBar = () => {
           setInitData({ icon: "", color: "", name: "", id: "" });
         }}
         initData={initData}
+        user={user}
       />
     </>
   );
@@ -144,6 +147,7 @@ const SideBarCatItem = (props) => {
           size={15}
           onClick={() => {
             props.edit(props.id, props.name, props.icon_name, props.color);
+            props.reset();
           }}
         />
         <Trash

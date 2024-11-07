@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Trash } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 const Records = () => {
   const searchParams = useSearchParams();
@@ -78,17 +79,25 @@ export const CustomCard = (props) => {
 const TheDay = (props) => {
   const [list, setList] = useState([]);
   const [day, setDay] = useState(formatDate(new Date()));
+  const { user } = useUser();
 
   const load = async () => {
-    console.log("loaded");
+    if (!user) return;
     setList(
-      await getRecords(day, props.category, props.type, props.min, props.max)
+      await getRecords(
+        user.id,
+        day,
+        props.category,
+        props.type,
+        props.min,
+        props.max
+      )
     );
   };
 
   useEffect(() => {
     load();
-  }, [props, day]);
+  }, [props, day, user]);
 
   if (!list) {
     load();

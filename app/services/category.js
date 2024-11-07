@@ -1,11 +1,14 @@
-export async function postNewCat(name, icon, color) {
+export const backLink = "http://localhost:4000";
+
+export async function postNewCat(userId, name, icon, color) {
   if (name == "") {
     return 0;
   }
-  await fetch(`https://finance-tracker-service.onrender.com/category/add`, {
+  await fetch(`${backLink}/category/add`, {
     method: "POST",
     headers: { "Content-type": "application/json; charset=UTF-8" },
     body: JSON.stringify({
+      userId: userId,
       name: name,
       icon_name: icon,
       color: color,
@@ -13,43 +16,39 @@ export async function postNewCat(name, icon, color) {
   });
 }
 
-export const fetchCategories = async () => {
-  const res = await fetch(
-    `https://finance-tracker-service.onrender.com/category/list`,
-    {
+export const fetchCategories = async (userId) => {
+  try {
+    const res = await fetch(`${backLink}/category/list?userId=${userId}`, {
       method: "GET",
       headers: { "Content-type": "application/json" },
-    }
-  );
-  const datas = await res.json();
-  return datas;
+    });
+    const datas = await res.json();
+    return datas;
+  } catch (e) {
+    console.error("fetch category error ", e);
+    return [];
+  }
 };
 
 export const deleteCategories = async (id) => {
-  const res = await fetch(
-    `https://finance-tracker-service.onrender.com/category/delete`,
-    {
-      method: "DELETE",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        id: id,
-      }),
-    }
-  );
+  const res = await fetch(`${backLink}/category/delete`, {
+    method: "DELETE",
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+    body: JSON.stringify({
+      id: id,
+    }),
+  });
 };
 
 export const editCategory = async (id, newName, newIconName, newColor) => {
-  const res = await fetch(
-    `https://finance-tracker-service.onrender.com/category/edit`,
-    {
-      method: "PUT",
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-      body: JSON.stringify({
-        id: id,
-        name: newName,
-        icon_name: newIconName,
-        color: newColor,
-      }),
-    }
-  );
+  const res = await fetch(`${backLink}/category/edit`, {
+    method: "PUT",
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+    body: JSON.stringify({
+      id: id,
+      name: newName,
+      icon_name: newIconName,
+      color: newColor,
+    }),
+  });
 };
